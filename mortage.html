@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        .result {
+            font-weight: bold;
+            color: green;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Mortgage Calculator</h2>
+    <form id="mortgageForm">
+        <label>Enter your Principal:</label><br>
+        <input type="number" id="principal" required><br>
+
+        <label>Enter your Annual Interest Rate (%):</label><br>
+        <input type="number" id="annualRate" step="0.01" required><br>
+
+        <label>Period in Years:</label><br>
+        <input type="number" id="years" required><br>
+
+        <button type="button" onclick="calculateMortgage()">Calculate</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculateMortgage() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const annualRate = parseFloat(document.getElementById('annualRate').value);
+            const years = parseInt(document.getElementById('years').value);
+
+            if (principal < 1 || principal > 1000000) {
+                alert("Principal should be between 1 and 1,000,000");
+                return;
+            }
+
+            if (annualRate < 0 || annualRate > 30) {
+                alert("Annual interest rate should be between 0% and 30%");
+                return;
+            }
+
+            if (years < 1 || years > 30) {
+                alert("Period should be between 1 and 30 years");
+                return;
+            }
+
+            const percent = 100;
+            const monthsInYear = 12;
+            const monthlyRate = (annualRate / percent) / monthsInYear;
+            const numberOfPayments = years * monthsInYear;
+
+            // Mortgage calculation formula
+            const mortgage = principal * ((monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                                          (Math.pow(1 + monthlyRate, numberOfPayments) - 1));
+
+            const formattedMortgage = new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD' 
+            }).format(mortgage);
+
+            document.getElementById('result').innerHTML = `Your monthly mortgage payment is: <br>${formattedMortgage}`;
+        }
+    </script>
+</body>
+</html>
